@@ -1,0 +1,15 @@
+<!doctype html>
+<html>
+<head><title>Vulnsite</title></head>
+<body>
+<h1>Vulnerable website</h1>
+<ul>
+<li><a href="/search/">Search (SQLi)</a></li>
+<li><a href="/xss/?comment=hello">XSS demo</a></li>
+<li><a href="/profile/1/">Profile (broken access control)</a></li>
+<li><a href="/idor/1/">IDOR demo</a></li>
+<li><a href="/fetch/?url=http://example.com">SSRF demo</a></li>
+<li><a href="/note/1">Lack of encryption</a></li>
+</ul>
+</body>
+</html>
