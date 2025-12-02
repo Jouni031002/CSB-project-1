@@ -44,6 +44,7 @@ python manage.py shell
 5. Set up the database
 
 rm db.sqlite3  # optional, if file exists
+
 python manage.py migrate
 
 6. Load sample data
