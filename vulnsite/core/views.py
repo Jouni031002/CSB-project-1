@@ -88,24 +88,24 @@ def idor_profile(request, profile_id):
 #     return HttpResponse(f'Private info: {profile.secret_info}')
 
 # FLAW 5: SSRF (A10)
-# def fetch_url(request):
-#     url = request.GET.get('url')
-#     if not url:
-#         return HttpResponse('Provide ?url=...')
-#     resp = requests.get(url) # Fetches any url given
-#     return HttpResponse(resp.text[:1000])
-
-# Fix: validate host and scheme
-ALLOWED = ['example.com']
 def fetch_url(request):
     url = request.GET.get('url')
-    parsed = urlparse(url)
-    if parsed.scheme not in ('http', 'https'):
-        return HttpResponse('Invalid scheme', status=400)
-    if parsed.hostname not in ALLOWED:
-        return HttpResponse('Blocked', status=403)
-    resp = requests.get(url)
+    if not url:
+        return HttpResponse('Provide ?url=...')
+    resp = requests.get(url) # Fetches any url given
     return HttpResponse(resp.text[:1000])
+
+# Fix: validate host and scheme
+# ALLOWED = ['example.com']
+# def fetch_url(request):
+#     url = request.GET.get('url')
+#     parsed = urlparse(url)
+#     if parsed.scheme not in ('http', 'https'):
+#         return HttpResponse('Invalid scheme', status=400)
+#     if parsed.hostname not in ALLOWED:
+#         return HttpResponse('Blocked', status=403)
+#     resp = requests.get(url)
+#     return HttpResponse(resp.text[:1000])
 
 # FLAW 6: Cryptographic Failure (A02)
 # Sensitive data stored and displayed in plaintext

@@ -5,6 +5,8 @@ This project is a deliberately vulnerable Django web application
 The vulnerable code can be found inside the vulnsite/core directory.  
 Each vulnerability is implemented intentionally, with screenshots and explanations included in the repository.
 
+Note: Authentication is illustrative. The login check is not fully implemented; the focus is on demonstrating how sensitive data should be protected.
+
 Installation and Usage Instructions
 
 1. Clone the repository
