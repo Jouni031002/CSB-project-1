@@ -31,8 +31,11 @@ pip install python-dotenv requests
 
 In the vulnsite directory, create a file named .env:
 
-SECRET_KEY=changeme
+SECRET_KEY=
+
 DEBUG=True
+
+FERNET_KEY=
 
 You can generate a secure key using Python:
 
@@ -42,6 +45,19 @@ python manage.py shell
 import secrets
 
 secrets.token_hex(32)
+
+Copy the generated key and put it as the value of SECRET_KEY
+
+Generate a secure fernet key:
+
+run:
+python manage.py shell
+
+from cryptography.fernet import Fernet
+
+Fernet.generate_key().decode()
+
+Copy the generated key and put it as the value of FERBET_KEY
 
 5. Set up the database
 

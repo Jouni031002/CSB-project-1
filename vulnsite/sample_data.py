@@ -26,10 +26,12 @@ def create_user_with_profile(username, email, password, secret_info=""):
         print(f"[+] Profile created/updated for: {username}")
     return user
 
-def create_note(user, content):
-    note = Note.objects.create(user=user, title="Title", secret_data="Secret")
-    print(f"[+] Note created for {user.username}: {content}")
+
+def create_note(user, title, plaintext):
+    note = Note.objects.create(user=user, title=title, secret_data=plaintext)
+    print(f"[+] Note created for {user.username}: {title}")
     return note
+
 
 def main():
     print("=== Creating sample users and data ===")
@@ -50,9 +52,9 @@ def main():
     )
 
     # Sample notes
-    create_note(alice, "Alice private note #1")
-    create_note(alice, "Alice private note #2")
-    create_note(bob, "Bob confidential note ✔")
+    create_note(alice, "Alice private note #1", "Alice secret note content")
+    create_note(alice, "Alice private note #2", "Alice secret note content 2")
+    create_note(bob, "Bob confidential note ✔", "Bob secret note content")
 
     print("\n=== Sample data creation complete! ===")
 

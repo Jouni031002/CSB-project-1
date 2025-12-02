@@ -46,17 +46,17 @@ def search_users(request):
     return render(request, 'core/search.html', {'rows': rows, 'query': q})
 
 # Fix: parameterized query or ORM
-# def search_users_safe(request):
+# def search_users(request):
 #     q = request.GET.get('q', '')
-#     # raw = """
-    # SELECT p.id, u.username, p.secret_info
-    # FROM core_profile p
-    # JOIN auth_user u ON p.user_id = u.id
-    # WHERE u.username LIKE %s;
-    # """
-    # with connection.cursor() as cursor:
-    #     cursor.execute(raw, [f"%{q}%"])
-    #     rows = cursor.fetchall()
+#     raw = """
+#     SELECT p.id, u.username, p.secret_info
+#     FROM core_profile p
+#     JOIN auth_user u ON p.user_id = u.id
+#     WHERE u.username LIKE %s;
+#     """
+#     with connection.cursor() as cursor:
+#         cursor.execute(raw, [f"%{q}%"])
+#         rows = cursor.fetchall()
 #     return render(request, 'core/search.html', {'rows': rows, 'query': q})
 
 
@@ -88,24 +88,24 @@ def idor_profile(request, profile_id):
 #     return HttpResponse(f'Private info: {profile.secret_info}')
 
 # FLAW 5: SSRF (A10)
-def fetch_url(request):
-    url = request.GET.get('url')
-    if not url:
-        return HttpResponse('Provide ?url=...')
-    resp = requests.get(url) # Fetches any url given
-    return HttpResponse(resp.text[:1000])
-
-# Fix: validate host and scheme
-# ALLOWED = ['example.com']
 # def fetch_url(request):
 #     url = request.GET.get('url')
-#     parsed = urlparse(url)
-#     if parsed.scheme not in ('http', 'https'):
-#         return HttpResponse('Invalid scheme', status=400)
-#     if parsed.hostname not in ALLOWED:
-#         return HttpResponse('Blocked', status=403)
-#     resp = requests.get(url)
+#     if not url:
+#         return HttpResponse('Provide ?url=...')
+#     resp = requests.get(url) # Fetches any url given
 #     return HttpResponse(resp.text[:1000])
+
+# Fix: validate host and scheme
+ALLOWED = ['example.com']
+def fetch_url(request):
+    url = request.GET.get('url')
+    parsed = urlparse(url)
+    if parsed.scheme not in ('http', 'https'):
+        return HttpResponse('Invalid scheme', status=400)
+    if parsed.hostname not in ALLOWED:
+        return HttpResponse('Blocked', status=403)
+    resp = requests.get(url)
+    return HttpResponse(resp.text[:1000])
 
 # FLAW 6: Cryptographic Failure (A02)
 # Sensitive data stored and displayed in plaintext
@@ -114,18 +114,24 @@ from .models import Profile, Note
 
 def show_note(request, note_id):
     note = Note.objects.get(id=note_id)
-    return HttpResponse(f"Note: {note.title}<br>Secret: {note.secret_data}") # Unencrypted, revealed in plaintext.
+    return HttpResponse(f"Note: {note.title}<br>Secret: {note.secret_data}")
 
 # Fix: encrypt sensitive data and require authentication
 
-# from django.contrib.auth.decorators import login_required
+# --- FIXED VERSION (encrypted + optional login) ---
 # from cryptography.fernet import Fernet
+# from django.conf import settings
+# from django.contrib.auth.decorators import login_required
 
-# cipher_key = Fernet.generate_key()
-# cipher = Fernet(cipher_key)
+# cipher = Fernet(settings.FERNET_KEY.encode())
 
-# @login_required
+# from cryptography.fernet import Fernet
+# from core.models import Note
+
+# cipher = Fernet(settings.FERNET_KEY.encode())
+
 # def show_note(request, note_id):
 #     note = Note.objects.get(id=note_id)
-#     decrypted = cipher.decrypt(note.secret_data.encode()).decode()
-#     return HttpResponse(f"Note: {note.title}<br>Secret: {decrypted}")
+#     # Encrypt on the fly for display
+#     encrypted = cipher.encrypt(note.secret_data.encode()).decode()
+#     return HttpResponse(f"Note: {note.title}<br>Secret: {encrypted}")
