@@ -118,7 +118,6 @@ def show_note(request, note_id):
 
 # Fix: encrypt sensitive data and require authentication
 
-# --- FIXED VERSION (encrypted + optional login) ---
 # from cryptography.fernet import Fernet
 # from django.conf import settings
 # from django.contrib.auth.decorators import login_required
