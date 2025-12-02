@@ -33,19 +33,30 @@ def profile_detail(request, user_id):
 
 def search_users(request):
     q = request.GET.get('q', '')
-    raw = f"SELECT id, name, email FROM core_profile WHERE name LIKE '%{q}%';"
+    # Vulnerable raw SQL string concatenation
+    raw = f"""
+    SELECT p.id, u.username, p.secret_info
+    FROM core_profile p
+    JOIN auth_user u ON p.user_id = u.id
+    WHERE u.username LIKE '%{q}%';
+    """
     with connection.cursor() as cursor:
-        cursor.execute(raw) # String concat SQL query
+        cursor.execute(raw)
         rows = cursor.fetchall()
     return render(request, 'core/search.html', {'rows': rows, 'query': q})
 
 # Fix: parameterized query or ORM
-# def search_users(request):
+# def search_users_safe(request):
 #     q = request.GET.get('q', '')
-#     raw = f"SELECT id, name, email FROM core_profile WHERE name LIKE '%{q}%';"
-#     with connection.cursor() as cursor:
-#         cursor.execute("SELECT id, name, email FROM core_profile WHERE name LIKE %s;", [f"%{q}%"])
-#         rows = cursor.fetchall()
+#     # raw = """
+    # SELECT p.id, u.username, p.secret_info
+    # FROM core_profile p
+    # JOIN auth_user u ON p.user_id = u.id
+    # WHERE u.username LIKE %s;
+    # """
+    # with connection.cursor() as cursor:
+    #     cursor.execute(raw, [f"%{q}%"])
+    #     rows = cursor.fetchall()
 #     return render(request, 'core/search.html', {'rows': rows, 'query': q})
 
 

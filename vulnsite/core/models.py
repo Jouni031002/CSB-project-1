@@ -11,6 +11,7 @@ class Profile(models.Model):
         return self.name
     
 class Note(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=100)
     secret_data = models.TextField()
 
