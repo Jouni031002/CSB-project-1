@@ -36,6 +36,8 @@ DEBUG=True
 
 You can generate a secure key using Python:
 
+run:
+python manage.py shell
 >>> import secrets
 >>> secrets.token_hex(32)
 
