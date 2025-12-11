@@ -2,14 +2,23 @@
 <html>
 <head><title>Vulnsite</title></head>
 <body>
+{% if user.is_authenticated %}
+    <p>
+        Logged in as {{ user.username }} —
+        <a href="/accounts/logout/">Logout</a>
+    </p>
+{% else %}
+    <p>
+        <a href="/accounts/login/">Login</a>
+    </p>
+{% endif %}
 <h1>Vulnerable website</h1>
 <ul>
 <li><a href="/search/">Search (SQLi)</a></li>
 <li><a href="/xss/?comment=hello">XSS demo</a></li>
 <li><a href="/profile/1/">Profile (broken access control)</a></li>
-<li><a href="/idor/1/">IDOR demo</a></li>
 <li><a href="/fetch/?url=http://example.com">SSRF demo</a></li>
-<li><a href="/note/1">Lack of encryption</a></li>
+<li><a href="/debug-info/">Security Misconfiguration demo</a></li>
 </ul>
 </body>
 </html>

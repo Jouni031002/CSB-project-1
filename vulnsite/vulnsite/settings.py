@@ -14,7 +14,6 @@ from pathlib import Path
 from dotenv import load_dotenv
 import os
 load_dotenv()
-FERNET_KEY = os.getenv("FERNET_KEY")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -26,10 +25,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv("SECRET_KEY")
 
-# SECURITY WARNING: don't run with debug turned on in production!
+# In reality DEBUG should be set to False, this is to demonstrate flaw 5
 DEBUG = True
+#DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost']
+
+LOGIN_REDIRECT_URL = '/'
 
 
 # Application definition

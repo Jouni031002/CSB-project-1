@@ -5,8 +5,6 @@ This project is a deliberately vulnerable Django web application
 The vulnerable code can be found inside the vulnsite/core directory.  
 Each vulnerability is implemented intentionally, with screenshots and explanations included in the repository.
 
-Note: Authentication is illustrative. The login check is not fully implemented; the focus is on demonstrating how sensitive data should be protected.
-
 Installation and Usage Instructions
 
 1. Clone the repository
@@ -37,8 +35,6 @@ SECRET_KEY=
 
 DEBUG=True
 
-FERNET_KEY=
-
 You can generate a secure key using Python:
 
 run:
@@ -49,17 +45,6 @@ import secrets
 secrets.token_hex(32)
 
 Copy the generated key and put it as the value of SECRET_KEY
-
-Generate a secure fernet key:
-
-run:
-python manage.py shell
-
-from cryptography.fernet import Fernet
-
-Fernet.generate_key().decode()
-
-Copy the generated key and put it as the value of FERBET_KEY
 
 5. Set up the database
 
